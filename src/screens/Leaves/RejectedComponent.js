@@ -124,7 +124,7 @@ const RejectedComponent = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: "15%",
+    padding: '10%',
     backgroundColor: '#FFFFFF',
   },
   header: {
