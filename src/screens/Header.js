@@ -3,11 +3,16 @@ import { View, Image, StyleSheet, Button, TouchableOpacity } from 'react-native'
 import { AuthContext } from '../context/AuthContext';
 import Home from './HomeScreen';
 import { Text } from 'react-native';
+import {showMessage} from 'react-native-flash-message';
 const Header = ({ navigation }) => {
   const { login, isLogin, logout, loginres } = useContext(AuthContext);
   const handleLogout = () => {
     logout();
-    alert('logout successfully');
+    showMessage({
+      message: 'Logout Successful',
+      type: 'success',
+      floating: true,
+    });
     navigation.navigate('LoginScreen');
   };
   return (

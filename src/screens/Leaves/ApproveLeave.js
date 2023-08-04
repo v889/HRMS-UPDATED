@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     fontSize: 21,
     fontWeight: 'bold',
     color: '#000000',
-    margin: 20,
+    marginLeft: "15%",
   },
   buttonContainer: {
     flexDirection: 'row',

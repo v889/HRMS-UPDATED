@@ -8,20 +8,82 @@ import Header from './Header';
 import CalendarScreen from '../component/Calender';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {Dimensions} from 'react-native';
+import io from 'socket.io-client';
+import {BASE_URL, RBASE_URL} from '../ConfigLinks';
+import axios from 'axios';
 
 
 const Home = ({navigation}) => {
   const {userInfo, isLoading, logout} = useContext(AuthContext);
+  const [jobProfiles, setJobProfiles] = useState([]);
   console.log(userInfo.admin);
   const {employee} = userInfo;
   const name = employee ? employee.name : 'User';
   const currentBarCode = employee ? employee.currentBarCode : 'null';
   const screenHeight = Dimensions.get('window').height;
   console.log(currentBarCode);
-  const handleDoc = () => {
-    navigation.navigate('Documents');
-  };
+  let id;
+ 
+  if (userInfo.admin) {
+    id = userInfo?.admin?._id;
+  } else {
+    id = userInfo?.employee?._id;
+  }
+  useEffect(() => {
+    setupSocketConnection();
+  }, []);
+  const setupSocketConnection = () => {
+    const socket = io(RBASE_URL, {query: {employeeId: id}});
 
+    socket.on('connect', () => {
+      console.log('Connected to websocket');
+    });
+
+    socket.on('notification', notification => {
+      console.log('notification.... ', notification);
+      const length = notification.notification.length;
+      Alert.alert(notification.notification[length - 1].message);
+    });
+
+    socket.on('disconnect', () => {
+      console.log('Disconnected from websocket');
+    });
+
+    socket.on('error', error => {
+      console.log(error.message);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  };
+  useEffect(() => {
+    const fetchDataFromAPI = async () => {
+      try {
+        const response = await axios.get(
+          `${BASE_URL}/attendance/staffAttendance`,
+        );
+        const data = response.data.data;
+        console.log('datastaff ', data);
+
+        const jobProfilesData = data.map(item => {
+          return {
+            jobProfileName: item.thisJobProfile.jobProfileName,
+            totalPresent: item.todayPresent,
+            totalEmployees: item.totalEmployees,
+          };
+        });
+
+        setJobProfiles(jobProfilesData);
+      } catch (error) {
+        console.error('Error fetching data from API:', error);
+        // Handle errors
+      }
+    };
+
+    // Call the fetchDataFromAPI function when the component mounts
+    fetchDataFromAPI();
+  }, []);
   return (
     <View style={{height: screenHeight * 0.8}}>
       <SafeAreaView>
@@ -46,6 +108,79 @@ const Home = ({navigation}) => {
                 style={{width: 250, height: 200, alignItems: 'center'}}
                 source={{uri: `${currentBarCode}`}}
               />
+            </View>
+            <View>
+              <Text style={styles.text}>Staff Attendance</Text>
+            </View>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                // backgroundColor: 'yellow',
+              }}
+            >
+              {jobProfiles.map((profile, index) => (
+                <View
+                  key={index}
+                  style={{
+                    width: '45%',
+
+                    backgroundColor: 'white',
+                    borderRadius: 8,
+                    borderWidth: 1,
+                    borderColor: '#DEDEDE',
+
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    margin: 10,
+                  }}
+                >
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginTop: 10,
+                    }}
+                  >
+                    {/* <View style={{flexDirection: 'row'}}> */}
+                    <Text
+                      style={{
+                        color: '#283093',
+                        fontWeight: '700',
+                        fontSize: 15,
+                      }}
+                    >
+                      {profile.totalPresent}
+                    </Text>
+                    <Text
+                      style={{
+                        color: '#283093',
+                        fontWeight: '700',
+                        fontSize: 15,
+                      }}
+                    >
+                      /
+                    </Text>
+                    <Text
+                      style={{
+                        color: '#283093',
+                        fontWeight: '700',
+                        fontSize: 15,
+                        
+                      }}
+                    >
+                      {profile.totalEmployees}
+                    </Text>
+                  </View>
+                  <Text
+                    style={{color: 'black', fontWeight: '700', fontSize: 18,marginBottom:"5%"}}
+                  >
+                    {profile.jobProfileName}
+                  </Text>
+                </View>
+              ))}
             </View>
             <View style={styles.div1}>
               <View style={styles.subdiv}>
@@ -148,9 +283,11 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     width: 150,
     height: 50,
+    marginLeft:"2%",
+    marginRight:"2%"
   },
   arrowIcon: {
-      marginLeft:10
+      marginRight:"10%"
   },
   linkText: {
     color: '#283093',

@@ -122,7 +122,7 @@ const ConfirmedComponent = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: "15%",
     backgroundColor: '#FFFFFF',
   },
   header: {
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
   },
   appliedDate: {
     color: '#757575',
-    marginLeft: '65%',
+    marginLeft: '50%',
   },
   rowContainer: {
     justifyContent: 'flex-end',

@@ -18,8 +18,9 @@ const Leaves = ({ navigation }) => {
   const { isLoading, isLogin, login, logout } = useContext(AuthContext);
   return (
     <SafeAreaView>
+      <Navbar />
       <ScrollView>
-        <Navbar />
+        
         <View style={styles.container}>
           <View style={styles.div1}>
             <View style={{ marginBottom: 20 }}>
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
 
-    paddingTop: 12,
+    paddingTop: "25%",
   },
   Ftext: {
     backgroundColor: '#E6E6FA',

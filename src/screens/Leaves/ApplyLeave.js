@@ -356,7 +356,7 @@ const LeaveApplication = () => {
           <Text style={styles.label}>Application Type:</Text>
           <View style={styles.dropdown}>
             <Picker
-              style={styles.picker}
+              style={[styles.picker,{marginBottom:"4%"}]}
               selectedValue={selectedOption}
               onValueChange={itemValue => setSelectedOption(itemValue)}
             >
@@ -748,15 +748,19 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     borderWidth: 1,
-    borderColor: '#000',
+    borderColor: '#DEDEDE',
     borderRadius: 5,
     overflow: 'hidden',
     backgroundColor: '#f5f5f5',
-    padding: 5,
+
+    padding:"2%",
   },
   picker: {
     height: 40,
     width: '100%',
+    
+    justifyContent:"center"
+    
   },
   selectedDate: {
     marginTop: 10,
@@ -764,8 +768,8 @@ const styles = StyleSheet.create({
     color: '#555',
   },
   reasonInput: {
-    borderWidth: 1,
-    borderColor: '#000',
+    borderWidth: 0.5,
+    borderColor: '#DEDEDE',
     borderRadius: 5,
     padding: 10,
     height: 100,
@@ -782,8 +786,9 @@ const styles = StyleSheet.create({
     color: 'black',
     paddingVertical: 10,
     paddingHorizontal: 12,
-    borderRadius: 5,
-    borderWidth:1
+    borderRadius: 0.1,
+    borderWidth:1,
+    borderColor:"#DEDEDE"
     // alignSelf: 'flex-end',
   },
   Ftext: {
