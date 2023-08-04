@@ -220,7 +220,8 @@ const LeaveApplication = () => {
   };
   useEffect(()=>{
     getEmployee()
-  },[])
+  },[searchText])
+  
   const showFromDatePicker = () => {
     setDatePickerVisibility('fromDate');
   };
@@ -248,28 +249,33 @@ const LeaveApplication = () => {
     }
     setToggle(!toggle)
   }
-  const getEmployee=()=>{
-    axios.get(`${BASE_URL}/employee/`).then(res=>{
-      //console.log("Employee",res.data)
-      setEmployeeList(res.data.employees)
-    }).catch((error)=>{
-      console.log(error)
-    })
-  }
-  const handleSearchInputChange = (text) => {
-   
-    setSearchText(text);
-  
-    const filteredData = EmployeeList.filter(item => {
+  const filter=(data)=>{
+    const filteredData = data.filter(item => {
       const name = item.name.toLowerCase(); 
       const searchQuery = searchText.toLowerCase();
     
       return name.includes(searchQuery); 
     });
-    
-    setEmployeeList(filteredData);
-    setShowEmployeeList(true)
-  };
+    return filteredData
+
+  }
+  const getEmployee=()=>{
+    axios.get(`${BASE_URL}/employee/`).then(res=>{
+      //console.log("Employee",res.data)
+      setEmployeeList(filter(res.data.employees))
+     
+      
+      //setEmployeeList(filteredData);
+    }).catch((error)=>{
+      console.log(error)
+    })
+  }
+  const handleSearch=(text)=>{
+    setSearchText(text)
+   setShowEmployeeList(true)
+
+  }
+  
 
   const handleSearchInputFocus = () => {
     
@@ -329,8 +335,10 @@ const LeaveApplication = () => {
 
 
   return (
+    <View>
+      <Navbar/>
     <ScrollView contentContainerStyle={styles.container}>
-      <Navbar />
+     
       <View
         style={{
           marginTop: 12,
@@ -360,7 +368,7 @@ const LeaveApplication = () => {
               selectedValue={selectedOption}
               onValueChange={itemValue => setSelectedOption(itemValue)}
             >
-              <Picker.Item label="Choose:" value="Any" />
+              <Picker.Item label="Choose:" value="" />
               <Picker.Item label="Leave" value="Leave" />
               <Picker.Item label="Gatepass" value="Gatepass" />
             </Picker>
@@ -402,10 +410,11 @@ const LeaveApplication = () => {
                 marginRight: 10,
               }}
               placeholder="Enter Employee Name"
+              onChangeText={text=>handleSearch(text)}
               value={searchText}
               editable={toggle}
-              onChangeText={handleSearchInputChange}
-              onSubmitEditing={handleSearchInputChange}
+             
+             
             
             />
             <Feather size={15} color={'#283093'} name="search" />
@@ -441,9 +450,10 @@ const LeaveApplication = () => {
              marginRight: 10,
            }}
            placeholder="Enter Employee Name"
+           onChangeText={text=>setSearchText(text)}
            value={searchText}
            editable={toggle}
-           onChangeText={handleSearchInputChange}
+           
           
          />
          <Feather size={15} color={'#283093'} name="search" />
@@ -731,6 +741,7 @@ const LeaveApplication = () => {
         {isLoading && <ActivityIndicator size="large" color="#007AFF" />}
       </View>
     </ScrollView>
+    </View>
   );
 };
 

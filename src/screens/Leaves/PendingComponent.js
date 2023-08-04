@@ -28,7 +28,7 @@ const PendingComponent = () => {
     try {
       const response = await axios.get(`${BASE_URL}/leave/pending`);
       const data = response.data;
-      console.log('datapending', data);
+      //console.log('datapending', data);
 
       if (data.success && data.allPendingRequest) {
         setLeaveRequests(data.allPendingRequest);

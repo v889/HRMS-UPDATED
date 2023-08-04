@@ -57,6 +57,9 @@ const Home = ({navigation}) => {
       socket.disconnect();
     };
   };
+ 
+
+  
   useEffect(() => {
     const fetchDataFromAPI = async () => {
       try {
@@ -109,27 +112,29 @@ const Home = ({navigation}) => {
                 source={{uri: `${currentBarCode}`}}
               />
             </View>
+            
             <View>
               <Text style={styles.text}>Staff Attendance</Text>
             </View>
-
+            
             <View
               style={{
-                flexDirection: 'row',
-                // backgroundColor: 'yellow',
-              }}
+                height:100}}
+            >
+              <ScrollView
+              horizontal // Enable horizontal scrolling
+              showsHorizontalScrollIndicator={false} // Hide horizontal scroll indicator
+              contentContainerStyle={styles.horizontalScrollContainer}
             >
               {jobProfiles.map((profile, index) => (
                 <View
                   key={index}
                   style={{
-                    width: '45%',
-
+                    width: 200,
                     backgroundColor: 'white',
                     borderRadius: 8,
                     borderWidth: 1,
                     borderColor: '#DEDEDE',
-
                     flexDirection: 'column',
                     justifyContent: 'center',
                     alignItems: 'center',
@@ -181,7 +186,9 @@ const Home = ({navigation}) => {
                   </Text>
                 </View>
               ))}
+              </ScrollView>
             </View>
+           
             <View style={styles.div1}>
               <View style={styles.subdiv}>
                 <Text style={styles.text}>Your Leaves</Text>
