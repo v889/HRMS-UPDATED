@@ -37,30 +37,23 @@ const currentMonth = new Date().getMonth()+1 ;
 
 leaves.forEach((leave) => {
   if (leave.from && leave.to) {
-    const fromDate = new Date(leave.from);
-    const toDate = new Date(leave.to);
+    const fromDate = new Date(leave.from).toISOString().split('T')[0];
+    const toDate = new Date(leave.to).toISOString().split('T')[0];
 
     let currentDate = new Date(fromDate);
-    while (currentDate <= toDate) {
-      const year = currentDate.getFullYear();
-      const month = currentDate.getMonth() + 1;
+    while (currentDate <= new Date(toDate)) {
       const dateString = currentDate.toISOString().split('T')[0];
-
-      // Check if the current date is within the current month
-      if (year === currentYear && month === currentMonth) {
-        markedDates[dateString] = {
-          customStyles: {
-            container: {
-              backgroundColor: '#8A2626',
-              elevation: 1,
-            },
-            text: {
-              color: '#FAFAFA',
-            },
+      markedDates[dateString] = {
+        customStyles: {
+          container: {
+            backgroundColor: '#8A2626',
+            elevation: 1,
           },
-        };
-      }
-
+          text: {
+            color: '#FAFAFA',
+          },
+        },
+      };
       currentDate.setDate(currentDate.getDate() + 1);
     }
   }
