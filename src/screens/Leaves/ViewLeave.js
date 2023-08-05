@@ -12,7 +12,7 @@ import Feather from 'react-native-vector-icons/Feather';
 const ViewLeave = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
-  const widthArr = [100, 150, 100, 150];
+  const widthArr = [150, 150, 100, 150];
   const widthArrMYL = [150, 100, 150]; //ONLY FOR MY LEAVE
   const [dataLeave, setDataLeave] = useState([]);
   const [dataGatepass, setDataGatepass] = useState([]);
@@ -343,9 +343,11 @@ const ViewLeave = () => {
         <View
           style={{
             width: '45%',
-            borderRadius: 8,
+            borderRadius: 3,
+            borderWidth: 1.5,
+            borderRightWidth: 2.5,
+            // borderLeftWidth: 2,
             borderColor: '#DEDEDE',
-            borderWidth: 1,
             marginRight: 12,
           }}
         >
@@ -373,8 +375,9 @@ const ViewLeave = () => {
         <View
           style={{
             width: '45%',
-            borderRadius: 10,
-            borderWidth: 1,
+            borderRadius: 3,
+            borderWidth: 1.5,
+
             borderColor: '#DEDEDE',
           }}
         >
@@ -506,16 +509,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FAFAFA',
-
-    // padding: 16,
-    // borderRadius: 10,
   },
   dataWrapper: {
     borderRadius: 8,
     paddingLeft: '2%',
-
-    //paddingBottom:"2%"
-    //padding:"5%"
   },
   text: {
     fontSize: 16,
@@ -524,7 +521,6 @@ const styles = StyleSheet.create({
     padding: 5,
     textAlign: 'left',
     fontFamily: 'Inter',
-    // flexShrink: 1,
   },
   Bodytext: {
     fontFamily: 'Inter',
@@ -538,7 +534,6 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: '#ECEDFE',
     paddingVertical: 10,
-    // marginBottom: 12,
   },
   row: {
     borderBottomColor: '#C1C0B9',

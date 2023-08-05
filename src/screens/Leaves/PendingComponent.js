@@ -37,44 +37,7 @@ const PendingComponent = () => {
       console.error('Error fetching data:', error);
     }
   };
-  //prompt for deny reason
-  // const handleDenyPress = item => {
-  //   showMessage({
-  //     message: 'Deny Reason',
-  //     description: (
-  //       <TextInput
-  //         label="Reason"
-  //         value={denyReason}
-  //         onChangeText={setDenyReason}
-  //       />
-  //     ),
-  //     type: 'default',
-  //     icon: 'info',
-  //     duration: 0,
-  //     // floating: true,
-  //     onPress: () => {
-  //       hideMessage();
-  //       if (item.from && item.to) {
-  //         handleLeaveApproval(
-  //           item.employeeId._id,
-  //           item.from,
-  //           item.to,
-  //           'rejected',
-  //           denyReason, // Pass the deny reason to the approval function
-  //         );
-  //       } else {
-  //         handleGatepassApproval(
-  //           item.employeeId._id,
-  //           item.gatePassDate,
-  //           item.gatePassTime,
-  //           'rejected',
-  //           denyReason, // Pass the deny reason to the approval function
-  //         );
-  //       }
-  //       setDenyReason(''); // Reset the deny reason after submitting
-  //     },
-  //   });
-  // };
+
   const handleDenyPress = item => {
     setSelectedItem(item);
     setIsDenyModalVisible(true);
@@ -225,7 +188,7 @@ const PendingComponent = () => {
                 flexDirection: 'row',
                 marginTop: 20,
                 marginBottom: 5,
-                marginRight: 15,
+                marginRight: '10%',
               }}
             >
               <View
@@ -259,7 +222,13 @@ const PendingComponent = () => {
                 >
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <Feather name="check" color={'#FBFBFC'} size={20} />
-                    <Text style={{marginLeft: 4, color: '#FBFBFC'}}>
+                    <Text
+                      style={{
+                        marginLeft: 2,
+                        marginRight: '3%',
+                        color: '#FBFBFC',
+                      }}
+                    >
                       Approve
                     </Text>
                   </View>
@@ -331,9 +300,8 @@ const PendingComponent = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: "15%",
+    padding: '12%',
     backgroundColor: '#FFFFFF',
-    
   },
   header: {
     fontSize: 24,
@@ -370,7 +338,7 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: '#FBFBFC',
-    padding: 16,
+    padding: 20,
     marginVertical: 8,
     borderRadius: 1,
     borderColor: '#757575',
