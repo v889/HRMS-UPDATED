@@ -331,9 +331,8 @@ const PendingComponent = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: "15%",
+    padding: '12%',
     backgroundColor: '#FFFFFF',
-    
   },
   header: {
     fontSize: 24,

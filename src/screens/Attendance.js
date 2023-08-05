@@ -18,7 +18,7 @@ import CardArray from './CardArray';
 import Feather from 'react-native-vector-icons/Feather';
 import axios from 'axios';
 import {BASE_URL} from '../ConfigLinks';
-import { showMessage} from 'react-native-flash-message';
+import {showMessage} from 'react-native-flash-message';
 const Attendance = ({navigation}) => {
   const {isLogin, userInfo} = useContext(AuthContext);
   const [refreshing, setRefreshing] = useState(false);
@@ -66,89 +66,92 @@ const Attendance = ({navigation}) => {
     navigation.navigate('TableComp');
   };
   return (
-  
     <View style={{height: screenHeight * 0.8}}>
-      {isLogin?(
-      <SafeAreaView style={styles.container}>
-        <Navbar />
-        
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-          }
-        >
-          <View>
-            <TouchableOpacity style={styles.Ftext} onPress={handleAttendance}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <Text
+      {isLogin ? (
+        <SafeAreaView style={styles.container}>
+          <Navbar />
+
+          <ScrollView
+            contentContainerStyle={styles.scrollContent}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={handleRefresh}
+              />
+            }
+          >
+            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+              <TouchableOpacity style={styles.Ftext} onPress={handleAttendance}>
+                <View
                   style={{
-                    color: '#283093',
-                    fontSize: 16,
-                    fontWeight: '500',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
                   }}
                 >
-                  View Attendance Records
-                </Text>
-                <Feather size={15} color={'#283093'} name="external-link" />
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View>
-            <View style={styles.div1}>
-              <Text style={styles.HeadTxt}>Daily Staff Check-in</Text>
+                  <Text
+                    style={{
+                      color: '#283093',
+                      fontSize: 16,
+                      fontWeight: '500',
+                    }}
+                  >
+                    View Attendance Records
+                  </Text>
+                  <Feather size={15} color={'#283093'} name="external-link" />
+                </View>
+              </TouchableOpacity>
             </View>
-            <View style={styles.subdiv1}>
-              <View style={styles.subdiv2}>
-                <View style={styles.subdiv3}>
-                  <View style={styles.subdiv4}>
-                    <Text style={styles.num}>
-                      {dataAttendance.totalPresent}
-                    </Text>
-                    <Feather name="arrow-up" size={18} color={'#4B0082'} />
-                  </View>
-                  <Text style={styles.numTxt}>Present</Text>
-                </View>
+            <View>
+              <View style={styles.div1}>
+                <Text style={styles.HeadTxt}>Daily Staff Check-in</Text>
               </View>
-              <View style={styles.subdiv2}>
-                <View style={styles.subdiv3}>
-                  <View style={styles.subdiv4}>
-                    <Text style={styles.num}>{dataAttendance.totalAbsent}</Text>
-                    <Feather name="arrow-up" size={18} color={'#4B0082'} />
+              <View style={styles.subdiv1}>
+                <View style={styles.subdiv2}>
+                  <View style={styles.subdiv3}>
+                    <View style={styles.subdiv4}>
+                      <Text style={styles.num}>
+                        {dataAttendance.totalPresent}
+                      </Text>
+                      <Feather name="arrow-up" size={18} color={'#4B0082'} />
+                    </View>
+                    <Text style={styles.numTxt}>Present</Text>
                   </View>
-                  <Text style={styles.numTxt}>Absent</Text>
                 </View>
-              </View>
-              <View style={styles.subdiv2}>
-                <View style={styles.subdiv3}>
-                  <View style={styles.subdiv4}>
-                    <Text style={styles.num}>{dataAttendance.working}</Text>
-                    <Feather name="arrow-up" size={18} color={'#4B0082'} />
+                <View style={styles.subdiv2}>
+                  <View style={styles.subdiv3}>
+                    <View style={styles.subdiv4}>
+                      <Text style={styles.num}>
+                        {dataAttendance.totalAbsent}
+                      </Text>
+                      <Feather name="arrow-up" size={18} color={'#4B0082'} />
+                    </View>
+                    <Text style={styles.numTxt}>Absent</Text>
                   </View>
-                  <Text style={styles.numTxt}>Working</Text>
+                </View>
+                <View style={styles.subdiv2}>
+                  <View style={styles.subdiv3}>
+                    <View style={styles.subdiv4}>
+                      <Text style={styles.num}>{dataAttendance.working}</Text>
+                      <Feather name="arrow-up" size={18} color={'#4B0082'} />
+                    </View>
+                    <Text style={styles.numTxt}>Working</Text>
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
-          {isLogin ? (
-            <CardArray onRefresh={cardArrayRefresh} />
-          ) : (
-            <Text> </Text>
-          )}
-          {/* {userInfo.employee.role==='supervisor'|| userInfo.employee.role==='admin'? <CardArray /> : <Text> </Text>} */}
-        </ScrollView>
-       
-      </SafeAreaView>
-       ): (
+            {isLogin ? (
+              <CardArray onRefresh={cardArrayRefresh} />
+            ) : (
+              <Text> </Text>
+            )}
+            {/* {userInfo.employee.role==='supervisor'|| userInfo.employee.role==='admin'? <CardArray /> : <Text> </Text>} */}
+          </ScrollView>
+        </SafeAreaView>
+      ) : (
         showMessage({
-          message:'Login First',
-          duration:3000,
-          status:'warning',
+          message: 'Login First',
+          duration: 3000,
+          status: 'warning',
         })
       )}
     </View>
@@ -157,8 +160,8 @@ const Attendance = ({navigation}) => {
 export default Attendance;
 const styles = StyleSheet.create({
   Ftext: {
-    width: 350,
-    height: 52,
+    width: '90%', //350
+    // height: '50%', //42
     color: '#283093',
     fontSize: 16,
     fontWeight: '500',
@@ -168,9 +171,10 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     // marginRight:24,
     justifyContent: 'center',
+
     marginTop: 15,
     flex: 1,
-    marginLeft: '2%',
+    // marginLeft: '2%',
   },
   scrollContent: {
     flexGrow: 2,
@@ -181,7 +185,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    //  alignItems:'center'
+    backgroundColor: 'white',
+    // alignItems: 'center',
     // paddingHorizontal: 25,
     // paddingVertical: 30,
   },
@@ -201,7 +206,7 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 9,
     borderWidth: 0.5,
-    backgroundColor: '#F0F0F0',
+    backgroundColor: '#FBFBFC',
     borderColor: '#C8C8C8',
     justifyContent: 'center',
     alignItems: 'center',
