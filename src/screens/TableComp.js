@@ -58,7 +58,7 @@ const TableComp = () => {
   }, [selectedDate]);
   
   useEffect(() => {
-  handleJobProfile()
+    handleJobProfile
   },[searchText,selectJobProfile]);
   const handleRefresh = () => {
     setRefreshing(true);
@@ -79,12 +79,11 @@ const TableComp = () => {
   };
   fetchJobProfile()
   const handleJobProfile =async() => {
-    //setRefreshing(true)
    
 
     try {
       const res = await axios.get(
-        `${BASE_URL}/attendance/?jobProfileName=${encodeURIComponent(
+        `${BASE_URL}/attendance/??jobProfileName=${encodeURIComponent(
           selectJobProfile,
         )}&name=${encodeURIComponent(searchText)}`,
       );
@@ -134,16 +133,16 @@ const TableComp = () => {
         setData(mappedData);
         //console.log("renderData",mappedData);// console the
         setFilteredData(mappedData);
-        setRefreshing(false);
+        setIsLoading(false);
         setIsLogin(true);
         //alert('Attendance data fetched successfully');
       } else {
         console.log('Invalid data format:', parsedData);
-        setRefreshing(false);
+        setIsLoading(false);
       }
     } catch (err) {
       console.log(`API Error: ${err}`);
-      setRefreshing(false);
+      setIsLoading(false);
     }
   };
 
@@ -438,12 +437,13 @@ const TableComp = () => {
     prevDate.setDate(prevDate.getDate() - 1);
 
     setSelectedDate(prevDate);
-    if(selectedOption === 'Staff Attandance'){
+    setRefreshing(true)
+    {/*if(selectedOption === 'Staff Attandance'){
     setSearchText('');
     setSelectJobProfile('Job Profile');
     setEmployeePunch('');
     handleRefresh();
-    }
+    }*/}
   };
 
   const handleNextDate = () => {
@@ -452,12 +452,12 @@ const TableComp = () => {
     nextDate.setDate(nextDate.getDate() + 1);
 
     setSelectedDate(nextDate);
-    if(selectedOption === 'Staff Attandance'){
+    {/*if(selectedOption === 'Staff Attandance'){
       setSearchText('');
       setSelectJobProfile('Job Profile');
       setEmployeePunch('');
       handleRefresh();
-      }
+      }*/}
   };
   const tableHeader = () => (
     <View style={styles.header}>
