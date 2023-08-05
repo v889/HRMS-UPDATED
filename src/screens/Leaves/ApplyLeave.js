@@ -345,6 +345,7 @@ const LeaveApplication = () => {
           justifyContent: 'center',
           alignItems: 'flex-start',
           marginLeft: 17,
+         
         }}
       >
         <Text
@@ -721,6 +722,7 @@ const LeaveApplication = () => {
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'center',
+              marginBottom:"10%"
             }}
           >
             <Text
@@ -750,6 +752,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     backgroundColor: '#fff',
     padding: 16,
+    marginBottom:"10%"
   },
   formContainer: {
     flex: 1,
@@ -817,6 +820,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 15,
     marginLeft: 30,
+    marginBottom:"40%"
   },
   modalContainer: {
    

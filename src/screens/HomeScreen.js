@@ -11,6 +11,7 @@ import {Dimensions} from 'react-native';
 import io from 'socket.io-client';
 import {BASE_URL, RBASE_URL} from '../ConfigLinks';
 import axios from 'axios';
+import MIcon from 'react-native-vector-icons/AntDesign';
 
 
 const Home = ({navigation}) => {
@@ -112,10 +113,11 @@ const Home = ({navigation}) => {
                 source={{uri: `${currentBarCode}`}}
               />
             </View>
-            
+         
             <View>
               <Text style={styles.text}>Staff Attendance</Text>
             </View>
+            {jobProfiles.length>0?
             
             <View
               style={{
@@ -150,11 +152,13 @@ const Home = ({navigation}) => {
                     }}
                   >
                     {/* <View style={{flexDirection: 'row'}}> */}
+                    <MIcon name='loading1' size={15} color="#283093" />
                     <Text
                       style={{
                         color: '#283093',
                         fontWeight: '700',
                         fontSize: 15,
+                        marginLeft:"4%"
                       }}
                     >
                       {profile.totalPresent}
@@ -187,7 +191,9 @@ const Home = ({navigation}) => {
                 </View>
               ))}
               </ScrollView>
-            </View>
+            </View>:
+            <Text style={{textAlign:"center",color:"black",fontSize:15}} >No Staff Present</Text>
+}
            
             <View style={styles.div1}>
               <View style={styles.subdiv}>
