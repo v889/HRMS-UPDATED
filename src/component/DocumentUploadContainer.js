@@ -28,8 +28,9 @@ const DocumentUpload= ({document_name,onLoad}) => {
       // Printing the log realted to the file
       
      console.log('res : ' + JSON.stringify(res));
+     //console.log(res.length)
     
-      if (res !==null) {
+      if (res) {
         onLoad(true)
     
         try {
@@ -42,6 +43,7 @@ const DocumentUpload= ({document_name,onLoad}) => {
           });
           formData.append('emplyeeId',Id)
           formData.append('fileName',document_name)
+          console.log(formData)
     
           
     

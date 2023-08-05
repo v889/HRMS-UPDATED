@@ -1,12 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {
-  Button,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-} from 'react-native';
+import {Button, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {AuthContext} from '../context/AuthContext';
 import {SafeAreaView, Image, TouchableOpacity} from 'react-native';
 import Navbar from './Navbar';
@@ -18,6 +11,8 @@ import {Dimensions} from 'react-native';
 import io from 'socket.io-client';
 import {BASE_URL, RBASE_URL} from '../ConfigLinks';
 import axios from 'axios';
+import MIcon from 'react-native-vector-icons/AntDesign';
+
 
 const Home = ({navigation}) => {
   const {userInfo, isLoading, logout} = useContext(AuthContext);
@@ -29,7 +24,7 @@ const Home = ({navigation}) => {
   const screenHeight = Dimensions.get('window').height;
   console.log(currentBarCode);
   let id;
-
+ 
   if (userInfo.admin) {
     id = userInfo?.admin?._id;
   } else {
@@ -63,7 +58,9 @@ const Home = ({navigation}) => {
       socket.disconnect();
     };
   };
+ 
 
+  
   useEffect(() => {
     const fetchDataFromAPI = async () => {
       try {
@@ -116,86 +113,88 @@ const Home = ({navigation}) => {
                 source={{uri: `${currentBarCode}`}}
               />
             </View>
+         
             <View>
               <Text style={styles.text}>Staff Attendance</Text>
             </View>
-
+            {jobProfiles.length>0?
+            
             <View
               style={{
-                height: 100,
-              }}
+                height:100}}
             >
               <ScrollView
-                horizontal // Enable horizontal scrolling
-                showsHorizontalScrollIndicator={false} // Hide horizontal scroll indicator
-                contentContainerStyle={styles.horizontalScrollContainer}
-              >
-                {jobProfiles.map((profile, index) => (
+              horizontal // Enable horizontal scrolling
+              showsHorizontalScrollIndicator={false} // Hide horizontal scroll indicator
+              contentContainerStyle={styles.horizontalScrollContainer}
+            >
+              {jobProfiles.map((profile, index) => (
+                <View
+                  key={index}
+                  style={{
+                    width: 200,
+                    backgroundColor: 'white',
+                    borderRadius: 8,
+                    borderWidth: 1,
+                    borderColor: '#DEDEDE',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    margin: 10,
+                  }}
+                >
                   <View
-                    key={index}
                     style={{
-                      width: 200,
-                      backgroundColor: 'white',
-                      borderRadius: 8,
-                      borderWidth: 1,
-                      borderColor: '#DEDEDE',
-                      flexDirection: 'column',
+                      flexDirection: 'row',
                       justifyContent: 'center',
                       alignItems: 'center',
-                      margin: 10,
+                      marginTop: 10,
                     }}
                   >
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginTop: 10,
-                      }}
-                    >
-                      {/* <View style={{flexDirection: 'row'}}> */}
-                      <Text
-                        style={{
-                          color: '#283093',
-                          fontWeight: '700',
-                          fontSize: 15,
-                        }}
-                      >
-                        {profile.totalPresent}
-                      </Text>
-                      <Text
-                        style={{
-                          color: '#283093',
-                          fontWeight: '700',
-                          fontSize: 15,
-                        }}
-                      >
-                        /
-                      </Text>
-                      <Text
-                        style={{
-                          color: '#283093',
-                          fontWeight: '700',
-                          fontSize: 15,
-                        }}
-                      >
-                        {profile.totalEmployees}
-                      </Text>
-                    </View>
+                    {/* <View style={{flexDirection: 'row'}}> */}
+                    <MIcon name='loading1' size={15} color="#283093" />
                     <Text
                       style={{
-                        color: 'black',
+                        color: '#283093',
                         fontWeight: '700',
-                        fontSize: 18,
-                        marginBottom: '5%',
+                        fontSize: 15,
+                        marginLeft:"4%"
                       }}
                     >
-                      {profile.jobProfileName}
+                      {profile.totalPresent}
+                    </Text>
+                    <Text
+                      style={{
+                        color: '#283093',
+                        fontWeight: '700',
+                        fontSize: 15,
+                      }}
+                    >
+                      /
+                    </Text>
+                    <Text
+                      style={{
+                        color: '#283093',
+                        fontWeight: '700',
+                        fontSize: 15,
+                        
+                      }}
+                    >
+                      {profile.totalEmployees}
                     </Text>
                   </View>
-                ))}
+                  <Text
+                    style={{color: 'black', fontWeight: '700', fontSize: 18,marginBottom:"5%"}}
+                  >
+                    {profile.jobProfileName}
+                  </Text>
+                </View>
+              ))}
               </ScrollView>
-            </View>
+            </View>:
+            <Text style={{textAlign:"center",color:"black",fontSize:15}} >No Staff Present</Text>
+}
+           
             <View style={styles.div1}>
               <View style={styles.subdiv}>
                 <Text style={styles.text}>Your Leaves</Text>
@@ -209,29 +208,15 @@ const Home = ({navigation}) => {
                 <Text style={styles.text}>Quick Links</Text>
               </View>
               <View style={styles.footer}>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('Training')}
-                >
+                <TouchableOpacity onPress={() => navigation.navigate('Training')}>
                   <View style={styles.linkContainer}>
-                    <Icon
-                      name="users"
-                      size={16}
-                      color="blue"
-                      style={styles.arrowIcon}
-                    />
+                    <Icon name="users" size={16} color="blue" style={styles.arrowIcon} />
                     <Text style={styles.linkText}>Training</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('Document')}
-                >
+                <TouchableOpacity onPress={()=>navigation.navigate("Document")}>
                   <View style={styles.linkContainer}>
-                    <Icon
-                      name="file"
-                      size={16}
-                      color="blue"
-                      style={styles.arrowIcon}
-                    />
+                    <Icon name="file" size={16} color="blue" style={styles.arrowIcon} />
                     <Text style={styles.linkText}>Documents</Text>
                   </View>
                 </TouchableOpacity>
@@ -270,7 +255,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 1,
     elevation: 3,
-    borderRadius: 9,
+    borderRadius:9,
     paddingVertical: 30,
     backgroundColor: 'white', //#F0F0F0
     flexDirection: 'column',
@@ -298,7 +283,9 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     borderRadius: 7,
   },
-  div1: {},
+  div1: {
+
+  },
   linkContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -309,11 +296,11 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     width: 150,
     height: 50,
-    marginLeft: '2%',
-    marginRight: '2%',
+    marginLeft:"2%",
+    marginRight:"2%"
   },
   arrowIcon: {
-    marginRight: '10%',
+      marginRight:"10%"
   },
   linkText: {
     color: '#283093',

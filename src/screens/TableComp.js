@@ -56,26 +56,16 @@ const TableComp = () => {
   useEffect(() => {
     fetchData();
   }, [selectedDate]);
+  
   useEffect(() => {
-    fetchJobProfile();
-  });
+    handleJobProfile
+  },[searchText,selectJobProfile]);
   const handleRefresh = () => {
     setRefreshing(true);
     fetchData(); // Call the fetchData function again to refresh the data
     setRefreshing(false);
   };
-  const handleSearch = () => {
-    
-    setRefreshing(true)
-    const filteredData = data.filter(item => {
-      const name = item.name.toLowerCase(); 
-      const searchQuery = searchText.toLowerCase();
-    
-      return name.includes(searchQuery); 
-    });
-    setRefreshing(false)
-    setData(filteredData);
-  };
+
   
   const fetchJobProfile = async () => {
     try {
@@ -87,13 +77,15 @@ const TableComp = () => {
       console.log(err);
     }
   };
-  const handleJobProfile = async itemValue => {
-    setIsLoading(true);
-    setSelectJobProfile(itemValue);
+  fetchJobProfile()
+  const handleJobProfile =async() => {
+   
 
     try {
       const res = await axios.get(
-        `${BASE_URL}/attendance/?jobProfileName=${itemValue}`,
+        `${BASE_URL}/attendance/??jobProfileName=${encodeURIComponent(
+          selectJobProfile,
+        )}&name=${encodeURIComponent(searchText)}`,
       );
 
       const parsedData = res?.data;
@@ -177,7 +169,7 @@ const TableComp = () => {
         const parsedData = res?.data;
         //console.log('apidata', parsedData);
         if (parsedData.success && parsedData.attendanceRecords) {
-          const userData = parsedData.employees[0].punches;
+          const userData = parsedData.attendanceRecords[0].punches;
 
           console.log('data', userData.length);
 
@@ -213,7 +205,7 @@ const TableComp = () => {
               : 'Need Action';
 
             return {
-              Date: new Date(parsedData.employees[0].date).toLocaleDateString(
+              Date: new Date(parsedData.attendanceRecords[0].date).toLocaleDateString(
                 'en-GB',
                 {
                   year: 'numeric',
@@ -226,9 +218,9 @@ const TableComp = () => {
               status: item.status,
               Type: 'Pending',
               ApprovedBy: approvedByValue,
-              id: parsedData.employees[0].employeeId._id,
+              id: parsedData.attendanceRecords[0].employeeId._id,
               originalPunchIn: item.punchIn,
-              date: parsedData.employees[0].date,
+              date: parsedData.attendanceRecords[0].date,
             };
           });
           //updatedData=mappedData.shift()
@@ -445,12 +437,13 @@ const TableComp = () => {
     prevDate.setDate(prevDate.getDate() - 1);
 
     setSelectedDate(prevDate);
-    if(selectedOption === 'Staff Attandance'){
+    setRefreshing(true)
+    {/*if(selectedOption === 'Staff Attandance'){
     setSearchText('');
     setSelectJobProfile('Job Profile');
     setEmployeePunch('');
     handleRefresh();
-    }
+    }*/}
   };
 
   const handleNextDate = () => {
@@ -459,12 +452,12 @@ const TableComp = () => {
     nextDate.setDate(nextDate.getDate() + 1);
 
     setSelectedDate(nextDate);
-    if(selectedOption === 'Staff Attandance'){
+    {/*if(selectedOption === 'Staff Attandance'){
       setSearchText('');
       setSelectJobProfile('Job Profile');
       setEmployeePunch('');
       handleRefresh();
-      }
+      }*/}
   };
   const tableHeader = () => (
     <View style={styles.header}>
@@ -483,7 +476,7 @@ const TableComp = () => {
     return (
       <View style={styles.container}>
         <Navbar />
-        <ScrollView>
+       
           <View style={styles.container2}>
             <View style={{marginTop: 10}}>
               <Text style={{fontSize: 19, fontWeight: '700', color: 'black'}}>
@@ -500,9 +493,9 @@ const TableComp = () => {
                   placeholderTextColor="#B0B0B0"
                   onChangeText={text => {
                     setSearchText(text);
-                    handleSearch();
+                   
                   }}
-                  onSubmitEditing={handleSearch}
+                 
                   value={searchText}
                 />
               </View>
@@ -538,7 +531,7 @@ const TableComp = () => {
                   <Picker
                     style={styles.picker}
                     selectedValue={selectJobProfile}
-                    onValueChange={itemValue => handleJobProfile(itemValue)}
+                    onValueChange={itemValue => setSelectJobProfile(itemValue)}
                     itemStyle={{color: 'black'}} // Set text color for Picker items
                   >
                     <Picker.Item label="Job Profile" value="Any" />
@@ -557,9 +550,14 @@ const TableComp = () => {
                 </View>}
               </View>
             </View>
-
-            <View style={[styles.attendanceContainer]}>
+           
+           
+            
+          </View>
+          <ScrollView>
+          <View style={[styles.attendanceContainer]}>
               {selectedOption === 'Staff Attandance' ? (
+                
                 <ScrollView horizontal>
                   <FlatList
                     data={data}
@@ -569,6 +567,7 @@ const TableComp = () => {
                       <RefreshControl
                         refreshing={refreshing}
                         onRefresh={handleRefresh}
+                        
                       />
                     }
                     renderItem={({item, index}) => (
@@ -582,16 +581,20 @@ const TableComp = () => {
                             {item.Date}
                           </Text>
                           </View>
+                          
                           <View style={{width:"15%"}}>
                           <TouchableOpacity
-                            style={{flexDirection: 'row', flex: 1}}
+                            style={{flexDirection: 'row', flex: 1,marginTop:10}}
                           >
+                            
                             <Text
+                          
                               onPress={() => handleEmployeePunch(item.name)}
                               style={{...styles.columnRowTxt, marginLeft: 10}}
                             >
                               {item.name}
                             </Text>
+                            
                             {showEmployeePuches &&
                             employeePunch === item.name ? (
                               <MaterialCommunityIcons
@@ -602,11 +605,13 @@ const TableComp = () => {
                             ) : null}
                           </TouchableOpacity>
                           </View>
+                          
                           <View style={{width:"15%"}}>
                           <Text
                             style={{
                               ...styles.columnRowTxt,
                               marginLeft: 10,
+                              //marginBottom:"5%"
                             }}
                           >
                             {item.punchIn}
@@ -919,12 +924,13 @@ const TableComp = () => {
                     )}
                   />
                 </ScrollView>
+                
               ) : (
                 <MyAttendance date={selectedDate} />
               )}
             </View>
-          </View>
-        </ScrollView>
+          </ScrollView>
+    
         <View style={styles.dateFilterContainer}>
           <TouchableOpacity onPress={handlePrevDate}>
             <Icon name="arrow-left" size={20} color="black" />
@@ -1090,7 +1096,7 @@ const styles = StyleSheet.create({
   },
   columnRowTxt: {
     color: 'black',
-    flex: 1, // Set each column to occupy an equal portion of the row
+    
     alignItems: 'center',
     justifyContent: 'center',
     width: '90%',
@@ -1099,9 +1105,9 @@ const styles = StyleSheet.create({
   },
   attendanceContainer: {
     backgroundColor: '#fff',
-    height: '75%',
+    height: '100%',
     // width: '90%',
-    marginBottom: '10%',
+    marginBottom: '30%',
   },
   dateFilterContainer: {
     flexDirection: 'row',
@@ -1117,20 +1123,7 @@ const styles = StyleSheet.create({
     marginLeft: '25%',
     marginBottom: '5%',
   },
-  dateFilterContainer2: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 10,
-    borderColor: '#283093',
-    borderWidth: 1,
-    borderRadius: 10, // Adjust the border radius as needed
-    paddingHorizontal: 10,
-    paddingVertical: '1.5%',
-    maxWidth: 200,
-    marginLeft: '25%',
-    marginBottom: '5%',
-  },
+
   dateText: {
     fontSize: 16,
     fontWeight: 'bold',

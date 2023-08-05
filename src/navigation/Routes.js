@@ -19,6 +19,9 @@ import TableComp from '../screens/TableComp';
 import SplashScreen from '../screens/SplashScreen';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
+import MIcon from 'react-native-vector-icons/FontAwesome5';
+import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import NIcon from 'react-native-vector-icons/Ionicons';
 import Document from '../screens/Document';
 import Training from '../screens/Training';
 import Assessment from '../screens/Assessment';
@@ -189,6 +192,7 @@ const Routes = () => {
           options={{
             headerShown: false,
             unmountOnBlur: true ,
+            tabBarHideOnKeyboard:true,
             
             tabBarIcon: ({focused}) => (
               // <Icon
@@ -199,9 +203,9 @@ const Routes = () => {
               // />
               
               // <Icon name={iconName} size={24} color={iconColor} />
-              <Feather
+              <MIcon
                 name="user-check"
-                size={30}
+                size={25}
                 color={focused ? '#283093' : '#181818'}
               /> // Modified color prop */}
             ),
@@ -213,9 +217,10 @@ const Routes = () => {
           options={{
             unmountOnBlur: true,
             headerShown: false,
+            tabBarHideOnKeyboard:true,
             tabBarIcon: ({focused}) => (
-              <Feather
-                name="truck"
+              <MaterialIcon
+                name="airplane"
                 size={30}
                 color={focused ? '#283093' : '#181818'}
               /> // Modified color prop
@@ -228,8 +233,8 @@ const Routes = () => {
           options={{
             headerShown: false,
             tabBarIcon: ({focused}) => (
-              <Feather
-                name="bell"
+              <NIcon
+                name="notifications"
                 size={30}
                 color={focused ? '#283093' : '#181818'}
               /> // Modified color prop
