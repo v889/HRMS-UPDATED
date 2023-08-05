@@ -23,6 +23,7 @@ const NotificationsScreen = () => {
     const fetchNotifications = async () => {
       try {
         const res = await axios.get(`${BASE_URL}/notifications/${id}`);
+        console.log("data",res.data.notification)
         setNotifications(res.data.notification);
       } catch (error) {
         console.error(error);
@@ -61,7 +62,7 @@ const NotificationsScreen = () => {
         </View>
         <View style={styles.notificationDetails}>
           <Text style={styles.notificationMessage}>{item.message}</Text>
-          <Text style={styles.notificationTime}>{formatTime(item.createdAt)}</Text>
+          <Text style={styles.notificationTime}>{formatTime(item.date)}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -69,7 +70,7 @@ const NotificationsScreen = () => {
 
   const formatTime = (timestamp) => {
     const date = new Date(timestamp);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return  date.toISOString().split('T')[0];
   };
 
   return (
