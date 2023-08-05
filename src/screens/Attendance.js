@@ -66,7 +66,7 @@ const Attendance = ({navigation}) => {
     navigation.navigate('TableComp');
   };
   return (
-    <View style={{height: screenHeight * 0.8}}>
+    <View style={{height: screenHeight * 0.9}}>
       {isLogin ? (
         <SafeAreaView style={styles.container}>
           <Navbar />

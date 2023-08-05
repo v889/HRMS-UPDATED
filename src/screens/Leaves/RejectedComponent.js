@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
   },
   appliedDate: {
     color: '#757575',
-    marginLeft: '50%',
+    marginLeft: '55%',
   },
   rowContainer: {
     justifyContent: 'flex-end',
