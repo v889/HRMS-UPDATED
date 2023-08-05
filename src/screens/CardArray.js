@@ -7,42 +7,45 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Feather from 'react-native-vector-icons/Feather';
 import axios from 'axios';
-import { BASE_URL } from '../ConfigLinks';
-import { showMessage } from 'react-native-flash-message';
+import {BASE_URL} from '../ConfigLinks';
+import {showMessage} from 'react-native-flash-message';
 
-const CardArray = ({ onRefresh }) => {
+const CardArray = ({onRefresh}) => {
   const [pendingEmployees, setPendingEmployees] = useState([]);
 
   useEffect(() => {
     fetchData();
-  }, [onRefresh]);
+  }, [onRefresh, pendingEmployees]);
 
   const fetchData = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/attendance`);
       const data = response.data;
-      const allPendingPunches = data.attendanceRecords.reduce((result, employee) => {
-        console.log('result', result);
-        console.log("Employesssssssssssssssssss", employee);
-        const pendingPunches = employee.punches.filter(
-          el => el.status === 'pending',
-        );
-        if (pendingPunches.length > 0) {
-          result.push(
-            ...pendingPunches.map(punch => ({
-              Name: employee.employeeId.name,
-              Time: punch.punchIn,
-              jobProfileDes: employee.employeeId.jobProfileId.jobProfileName,
-              Id: employee.employeeId._id,
-              profilePic: employee.profilePicture
-            })),
+      const allPendingPunches = data.attendanceRecords.reduce(
+        (result, employee) => {
+          console.log('result', result);
+          console.log('Employesssssssssssssssssss', employee);
+          const pendingPunches = employee.punches.filter(
+            el => el.status === 'pending',
           );
-        }
-        return result;
-      }, []);
+          if (pendingPunches.length > 0) {
+            result.push(
+              ...pendingPunches.map(punch => ({
+                Name: employee.employeeId.name,
+                Time: punch.punchIn,
+                jobProfileDes: employee.employeeId.jobProfileId.jobProfileName,
+                Id: employee.employeeId._id,
+                profilePic: employee.profilePicture,
+              })),
+            );
+          }
+          return result;
+        },
+        [],
+      );
       console.log('277', allPendingPunches);
       setPendingEmployees(allPendingPunches);
     } catch (error) {
@@ -72,20 +75,20 @@ const CardArray = ({ onRefresh }) => {
       );
       if (status === 'approved') {
         showMessage({
-          message:`Employee with punchin-Time ${new Date(
+          message: `Employee with punchin-Time ${new Date(
             punchIn,
           ).toLocaleTimeString()} has been approved.`,
-          type:'success',
-          duration:5000
-        })
+          type: 'success',
+          duration: 5000,
+        });
       } else if (status === 'rejected') {
         showMessage({
-          message:`Employee with punchin-Time ${new Date(
+          message: `Employee with punchin-Time ${new Date(
             punchIn,
           ).toLocaleTimeString()}  has been denied.`,
-          type:"warning",
-          duration:5000
-        })
+          type: 'warning',
+          duration: 5000,
+        });
       }
     } catch (error) {
       console.error('patcherror', error);
@@ -112,24 +115,28 @@ const CardArray = ({ onRefresh }) => {
                       justifyContent: 'center',
                       alignItems: 'center',
                     }}
-                  >{employee.profilePic ? <Image
-                    source={{
-                      uri:
-                        employee.profilePic,
-                    }}
-                    style={styles.photo}
-                  /> : <Image
-                    source={{
-                      uri:
-                        'https://avatars.githubusercontent.com/u/94738352?v=4',
-                    }}
-                    style={styles.photo}
-                  />}
+                  >
+                    {employee.profilePic ? (
+                      <Image
+                        source={{
+                          uri: employee.profilePic,
+                        }}
+                        style={styles.photo}
+                      />
+                    ) : (
+                      <Image
+                        source={{
+                          uri:
+                            'https://avatars.githubusercontent.com/u/94738352?v=4',
+                        }}
+                        style={styles.photo}
+                      />
+                    )}
 
-                    <View style={{ flexDirection: 'column', paddingLeft: 10 }}>
+                    <View style={{flexDirection: 'column', paddingLeft: 10}}>
                       <Text style={styles.name}>{employee.Name}</Text>
                       <Text
-                        style={{ ...styles.punchIn, marginTop: 1, fontSize: 10 }}
+                        style={{...styles.punchIn, marginTop: 1, fontSize: 10}}
                       >
                         Punch In: {new Date(employee.Time).toLocaleTimeString()}
                       </Text>
@@ -153,7 +160,7 @@ const CardArray = ({ onRefresh }) => {
                     }}
                   >
                     <Feather size={15} color={'#283093'} name="briefcase" />
-                    <Text style={{ color: '#283093', marginLeft: 5 }}>
+                    <Text style={{color: '#283093', marginLeft: 5}}>
                       {employee.jobProfileDes}
                     </Text>
                   </View>
@@ -175,23 +182,28 @@ const CardArray = ({ onRefresh }) => {
                       handleAction(employee.Id, 'approved', employee.Time)
                     }
                   >
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
                       <Feather name="check" color={'#FBFBFC'} size={20} />
-                      <Text style={{ marginLeft: 4, color: '#FBFBFC' }}>
+                      <Text style={{marginLeft: 4, color: '#FBFBFC'}}>
                         Approve
                       </Text>
                     </View>
                   </TouchableOpacity>
 
                   <TouchableOpacity
-                    style={styles.Ftext}
+                    style={{
+                      ...styles.Ftext,
+                      backgroundColor: 'white',
+                      borderColor: '#283093',
+                      borderWidth: 1,
+                    }}
                     onPress={() =>
                       handleAction(employee.Id, 'rejected', employee.Time)
                     }
                   >
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                      <Feather name="x" color={'#FBFBFC'} size={20} />
-                      <Text style={{ marginLeft: 4, color: '#FBFBFC' }}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <Feather name="x" color={'#283093'} size={20} />
+                      <Text style={{marginLeft: 4, color: '#283093'}}>
                         Deny
                       </Text>
                     </View>
@@ -213,13 +225,13 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   card: {
-    backgroundColor: '#F0F0F0',
+    backgroundColor: '#FBFBFC',
     elevation: 2,
     borderRadius: 8,
     padding: 16,
     marginBottom: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 0.3 },
+    shadowOffset: {width: 0, height: 0.3},
     shadowOpacity: 0.2,
     shadowRadius: 0.7,
     flexDirection: 'column',
