@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useContext} from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+
 import {
   View,
   ScrollView,
@@ -55,11 +56,15 @@ const TableComp = () => {
 
   useEffect(() => {
     fetchData();
-  }, [selectedDate]);
+  }, [selectedDate,selectJobProfile,searchText]);
   
+  /*useEffect(() => {
+    handleJobProfile()
+  },[selectJobProfile]);
   useEffect(() => {
-    handleJobProfile
-  },[searchText,selectJobProfile]);
+   handleSearch()
+  },[searchText]);
+  */
   const handleRefresh = () => {
     setRefreshing(true);
     fetchData(); // Call the fetchData function again to refresh the data
@@ -79,13 +84,12 @@ const TableComp = () => {
   };
   fetchJobProfile()
   const handleJobProfile =async() => {
+   setRefreshing(true)
    
 
     try {
       const res = await axios.get(
-        `${BASE_URL}/attendance/??jobProfileName=${encodeURIComponent(
-          selectJobProfile,
-        )}&name=${encodeURIComponent(searchText)}`,
+        `${BASE_URL}/attendance?jobProfileName=${selectJobProfile}`,
       );
 
       const parsedData = res?.data;
@@ -95,26 +99,27 @@ const TableComp = () => {
       if (parsedData.success && parsedData.attendanceRecords) {
         const mappedData = userData.map(item => {
           //console.log('item111234', item);
+          let len = item.punches.length;
 
           // Extracting the time from the "punchIn" value
-          const punchInTime = item.punches[0]?.punchIn
-            ? new Date(item.punches[0].punchIn).toLocaleTimeString([], {
+          const punchInTime = item.punches[len-1]?.punchIn
+            ? new Date(item.punches[len-1].punchIn).toLocaleTimeString([], {
                 hour: '2-digit',
                 minute: '2-digit',
                 hour12: true,
               })
             : 'N/A';
-          const punchOutTime = item.punches[0]?.punchOut
-            ? new Date(item.punches[0].punchOut).toLocaleTimeString([], {
+          const punchOutTime = item.punches[len-1]?.punchOut
+            ? new Date(item.punches[len-1].punchOut).toLocaleTimeString([], {
                 hour: '2-digit',
                 minute: '2-digit',
                 hour12: true,
               })
             : 'Null';
-          const approvedByValue = item.punches[0]?.approvedBy?.name
-            ? item.punches[0]?.approvedBy.name
-            : item.punches[0]?.rejectedBy?.name
-            ? item.punches[0].rejectedBy.name
+          const approvedByValue = item.punches[len-1]?.approvedBy?.name
+            ? item.punches[len-1]?.approvedBy.name
+            : item.punches[len-1]?.rejectedBy?.name
+            ? item.punches[len-1].rejectedBy.name
             : 'Need Action';
 
           return {
@@ -126,25 +131,115 @@ const TableComp = () => {
             name: item.employeeId.name,
             punchIn: punchInTime,
             PunchOut: punchOutTime,
+            status: item.punches[len - 1].status,
+            Type: 'Pending',
             ApprovedBy: approvedByValue,
+            id: item.employeeId._id,
+            originalPunchIn: item.punches[len - 1].punchIn,
+            date: item.date,
           };
         });
 
         setData(mappedData);
+        setRefreshing(false)
         //console.log("renderData",mappedData);// console the
         setFilteredData(mappedData);
-        setIsLoading(false);
-        setIsLogin(true);
+        //setIsLoading(false);
+        //setIsLogin(true);
         //alert('Attendance data fetched successfully');
       } else {
         console.log('Invalid data format:', parsedData);
-        setIsLoading(false);
+        setRefreshing(false)
       }
     } catch (err) {
       console.log(`API Error: ${err}`);
-      setIsLoading(false);
+      setRefreshing(false)
     }
   };
+  const filter = (data) => {
+    console.log("\n",searchText)
+    const searchQuery = searchText.toLowerCase();
+    
+    const filteredData = data.filter(item => {
+      return item.nameLower.includes(searchQuery);
+    });
+    
+    return filteredData;
+  };
+  
+  const handleSearch =async() => {
+    //setRefreshing(true)
+    /*try {
+       const res = await axios.get(
+         `${BASE_URL}/attendance?name=${searchText}`,
+       );
+ 
+       const parsedData = res?.data;
+       //console.log("apidata",parsedData);
+       const userData = parsedData.attendanceRecords;
+       console.log(userData);
+       if (parsedData.success && parsedData.attendanceRecords) {
+         const mappedData = userData.map(item => {
+           //console.log('item111234', item);
+           let len = item.punches.length;
+ 
+           // Extracting the time from the "punchIn" value
+           const punchInTime = item.punches[len-1]?.punchIn
+             ? new Date(item.punches[len-1].punchIn).toLocaleTimeString([], {
+                 hour: '2-digit',
+                 minute: '2-digit',
+                 hour12: true,
+               })
+             : 'N/A';
+           const punchOutTime = item.punches[len-1]?.punchOut
+             ? new Date(item.punches[len-1].punchOut).toLocaleTimeString([], {
+                 hour: '2-digit',
+                 minute: '2-digit',
+                 hour12: true,
+               })
+             : 'Null';
+           const approvedByValue = item.punches[len-1]?.approvedBy?.name
+             ? item.punches[len-1]?.approvedBy.name
+             : item.punches[len-1]?.rejectedBy?.name
+             ? item.punches[len-1].rejectedBy.name
+             : 'Need Action';
+ 
+           return {
+             Date: new Date(item.date).toLocaleDateString('en-GB', {
+               year: 'numeric',
+               month: '2-digit',
+               day: '2-digit',
+             }),
+             name: item.employeeId.name,
+             punchIn: punchInTime,
+             PunchOut: punchOutTime,
+             status: item.punches[len - 1].status,
+             Type: 'Pending',
+             ApprovedBy: approvedByValue,
+             id: item.employeeId._id,
+             originalPunchIn: item.punches[len - 1].punchIn,
+             date: item.date,
+           };
+         });
+ 
+         setData(mappedData);
+         setRefreshing(false)
+         //console.log("renderData",mappedData);// console the
+         //setFilteredData(mappedData);
+         //setIsLoading(false);
+         //setIsLogin(true);
+         //alert('Attendance data fetched successfully');
+       } else {
+         console.log('Invalid data format:', parsedData);
+         setRefreshing(false)
+       }
+     } catch (err) {
+       console.log(`API Error: ${err}`);
+       setRefreshing(false)
+     }*/
+     const filterData=filter(data)
+     setData(filterData)
+   };
 
   const handleEmployeePunch = async name => {
     if (showEmployeePuches) {
@@ -257,10 +352,12 @@ const TableComp = () => {
 
     try {
       // const res = await axios.get('https://hrms-backend-04fw.onrender.com/api/v1/attendance/');
-      console.log(selectedDate);
+      //console.log(selectedDate);
       const datePart = selectedDate.toISOString().split('T')[0];
-      console.log(datePart);
-      const res = await axios.get(`${BASE_URL}/attendance?date=${datePart}/`);
+      //console.log(datePart);
+      const res = await axios.get(`${BASE_URL}/attendance?jobProfileName=${encodeURIComponent(
+        selectJobProfile,
+      )}&name=${encodeURIComponent(searchText)}&date=${encodeURIComponent(datePart)}/`);
 
       const parsedData = res?.data;
       // console.log('apidata', parsedData);
@@ -271,16 +368,8 @@ const TableComp = () => {
         const mappedData = userData.map(item => {
           //console.log('item111234', item);
           let len = item.punches.length;
-          //console.log("len",len)
-          const formatTime = time => {
-            return item.punches[len - 1]?.punchIn
-              ? new Date(item.punches[len - 1].punchIn).toLocaleTimeString([], {
-                  hour: '2-digit',
-                  minute: '2-digit',
-                  hour12: true,
-                })
-              : 'N/A';
-          };
+          //console.log("data",item.punches[len - 1])
+          
 
           const punchInTime = item.punches[len - 1]?.punchIn
             ? new Date(item.punches[len - 1].punchIn).toLocaleTimeString([], {
@@ -452,6 +541,7 @@ const TableComp = () => {
     nextDate.setDate(nextDate.getDate() + 1);
 
     setSelectedDate(nextDate);
+    setRefreshing(true)
     {/*if(selectedOption === 'Staff Attandance'){
       setSearchText('');
       setSelectJobProfile('Job Profile');
@@ -470,13 +560,10 @@ const TableComp = () => {
       </ScrollView>
     </View>
   );
-  if (isLoading) {
-    return <LoadingScreen />;
-  } else  {
-    return (
+   return (
       <View style={styles.container}>
         <Navbar />
-       
+        
           <View style={styles.container2}>
             <View style={{marginTop: 10}}>
               <Text style={{fontSize: 19, fontWeight: '700', color: 'black'}}>
@@ -550,6 +637,8 @@ const TableComp = () => {
                 </View>}
               </View>
             </View>
+          
+            
            
            
             
@@ -584,11 +673,11 @@ const TableComp = () => {
                           
                           <View style={{width:"15%"}}>
                           <TouchableOpacity
-                            style={{flexDirection: 'row', flex: 1,marginTop:10}}
+                            style={{flexDirection: 'row'}}
                           >
                             
                             <Text
-                          
+                            numberOfLines={2}
                               onPress={() => handleEmployeePunch(item.name)}
                               style={{...styles.columnRowTxt, marginLeft: 10}}
                             >
@@ -929,7 +1018,9 @@ const TableComp = () => {
                 <MyAttendance date={selectedDate} />
               )}
             </View>
-          </ScrollView>
+            </ScrollView>
+         
+        
     
         <View style={styles.dateFilterContainer}>
           <TouchableOpacity onPress={handlePrevDate}>
@@ -944,7 +1035,7 @@ const TableComp = () => {
         </View>
       </View>
     );
-  } 
+   
   
 };
 
@@ -1040,6 +1131,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     color: '#C8C8C8',
     marginLeft: 10,
+    width:"10%"
   },
   filterIcon: {
     fontSize: 16,
@@ -1051,6 +1143,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     height: 40,
     flex: 1,
+    width:"90%"
   },
   tableRow: {
     flexDirection: 'row',
@@ -1096,6 +1189,7 @@ const styles = StyleSheet.create({
   },
   columnRowTxt: {
     color: 'black',
+    //flex:1,
     
     alignItems: 'center',
     justifyContent: 'center',
@@ -1107,7 +1201,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     height: '100%',
     // width: '90%',
-    marginBottom: '30%',
+    //marginBottom: '40%',
   },
   dateFilterContainer: {
     flexDirection: 'row',
@@ -1121,7 +1215,7 @@ const styles = StyleSheet.create({
     paddingVertical: '1.5%',
     maxWidth: 200,
     marginLeft: '25%',
-    marginBottom: '5%',
+    marginBottom: '10%',
   },
 
   dateText: {
@@ -1179,4 +1273,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default React.memo(TableComp);
+export default TableComp;

@@ -99,7 +99,7 @@ const CardArray = ({onRefresh}) => {
       <View style={styles.container}>
         {pendingEmployees.map(
           employee => (
-            console.log('cardData', employee),
+            //console.log('cardData', employee),
             (
               <View key={employee.Time} style={styles.card}>
                 <View
