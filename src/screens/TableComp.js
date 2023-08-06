@@ -673,13 +673,13 @@ const TableComp = () => {
                           
                           <View style={{width:"15%"}}>
                           <TouchableOpacity
-                            style={{flexDirection: 'row'}}
+                            style={[styles.columnRowTxt,{flexDirection: 'row',marginLeft: 10}]}
                           >
                             
                             <Text
                             numberOfLines={2}
                               onPress={() => handleEmployeePunch(item.name)}
-                              style={{...styles.columnRowTxt, marginLeft: 10}}
+                              
                             >
                               {item.name}
                             </Text>
@@ -853,7 +853,7 @@ const TableComp = () => {
                               renderItem={({item, index}) => (
                                 <View style={styles.tableRow}>
                                   
-                                 <View  style={{width:"15%",marginLeft:"10%"}}>
+                                 <View  style={{width:"15%",marginLeft:"5%"}}>
                                   <Text
                                     style={{
                                       ...styles.columnRowTxt,
@@ -863,7 +863,7 @@ const TableComp = () => {
                                     {item.punchIn}
                                   </Text>
                                   </View>
-                                  <View style={{width:"15%",marginLeft:"15%"}}>
+                                  <View style={{width:"15%",marginLeft:"20%"}}>
                                   <Text
                                     style={{
                                       ...styles.columnRowTxt,
@@ -873,7 +873,7 @@ const TableComp = () => {
                                     {item.PunchOut}
                                   </Text>
                                   </View>
-                                  <View style={{width:"15%",marginLeft:"5%"}}>
+                                  <View style={{width:"15%",marginLeft:"4%"}}>
                                   <Text
                                     style={{
                                       ...styles.columnRowTxt,
