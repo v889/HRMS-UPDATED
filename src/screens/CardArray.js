@@ -26,8 +26,8 @@ const CardArray = ({onRefresh}) => {
       const data = response.data;
       const allPendingPunches = data.attendanceRecords.reduce(
         (result, employee) => {
-          console.log('result', result);
-          console.log('Employesssssssssssssssssss', employee);
+          // console.log('result', result);
+          // console.log('Employesssssssssssssssssss', employee);
           const pendingPunches = employee.punches.filter(
             el => el.status === 'pending',
           );
@@ -46,7 +46,7 @@ const CardArray = ({onRefresh}) => {
         },
         [],
       );
-      console.log('277', allPendingPunches);
+      // console.log('277', allPendingPunches);
       setPendingEmployees(allPendingPunches);
     } catch (error) {
       console.error('errA', error);
@@ -56,19 +56,19 @@ const CardArray = ({onRefresh}) => {
 
   const handleAction = async (employeeId, status, punchIn) => {
     try {
-      console.log('timmme' + punchIn);
+      // console.log('timmme' + punchIn);
       const requestData = {
         employeeId: employeeId,
         status: status, // usin' the provided status
         punchInTime: punchIn,
       };
-      console.log('patch data', requestData);
+      // console.log('patch data', requestData);
 
       const response = await axios.patch(
         `${BASE_URL}/attendance/updateAttendance`,
         requestData,
       );
-      console.log(response.data);
+      // console.log(response.data);
       // Update the pendingEmployees state by removing the approved/rejected employee --> by checking it prev one
       setPendingEmployees(prevEmployees =>
         prevEmployees.filter(employee => employee.Time !== punchIn),
@@ -97,123 +97,112 @@ const CardArray = ({onRefresh}) => {
   return (
     <SafeAreaView>
       <View style={styles.container}>
-        {pendingEmployees.map(
-          employee => (
-            console.log('cardData', employee),
-            (
-              <View key={employee.Time} style={styles.card}>
-                <View
-                  style={{
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'center',
-                      alignItems: 'center',
+        {pendingEmployees.map(employee => (
+          <View key={employee.Time} style={styles.card}>
+            <View
+              style={{
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                {employee.profilePic ? (
+                  <Image
+                    source={{
+                      uri: employee.profilePic,
                     }}
-                  >
-                    {employee.profilePic ? (
-                      <Image
-                        source={{
-                          uri: employee.profilePic,
-                        }}
-                        style={styles.photo}
-                      />
-                    ) : (
-                      <Image
-                        source={{
-                          uri:
-                            'https://avatars.githubusercontent.com/u/94738352?v=4',
-                        }}
-                        style={styles.photo}
-                      />
-                    )}
-
-                    <View style={{flexDirection: 'column', paddingLeft: 10}}>
-                      <Text style={styles.name}>{employee.Name}</Text>
-                      <Text
-                        style={{...styles.punchIn, marginTop: 1, fontSize: 10}}
-                      >
-                        Punch In: {new Date(employee.Time).toLocaleTimeString()}
-                      </Text>
-
-                      {/* <Text >Employee ID: {employee.employeeId._id}</Text>  */}
-                    </View>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      backgroundColor: '#ECEDFE',
-                      marginTop: 12,
-                      width: '50%',
-                      height: 30,
-                      paddingHorizontal: 12,
-                      paddingVertical: 6,
-                      borderRadius: 12,
-                      borderWidth: 0.011,
+                    style={styles.photo}
+                  />
+                ) : (
+                  <Image
+                    source={{
+                      uri:
+                        'https://avatars.githubusercontent.com/u/94738352?v=4',
                     }}
-                  >
-                    <Feather size={15} color={'#283093'} name="briefcase" />
-                    <Text style={{color: '#283093', marginLeft: 5}}>
-                      {employee.jobProfileDes}
-                    </Text>
-                  </View>
-                  <Text style={styles.punchIn}>
+                    style={styles.photo}
+                  />
+                )}
+
+                <View style={{flexDirection: 'column', paddingLeft: 10}}>
+                  <Text style={styles.name}>{employee.Name}</Text>
+                  <Text style={{...styles.punchIn, marginTop: 1, fontSize: 10}}>
                     Punch In: {new Date(employee.Time).toLocaleTimeString()}
                   </Text>
-                </View>
 
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-evenly',
-                    margin: 25,
-                  }}
-                >
-                  <TouchableOpacity
-                    style={styles.Ftext}
-                    onPress={() =>
-                      handleAction(employee.Id, 'approved', employee.Time)
-                    }
-                  >
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <Feather name="check" color={'#FBFBFC'} size={20} />
-                      <Text style={{marginLeft: 4, color: '#FBFBFC'}}>
-                        Approve
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={{
-                      ...styles.Ftext,
-                      backgroundColor: 'white',
-                      borderColor: '#283093',
-                      borderWidth: 1,
-                    }}
-                    onPress={() =>
-                      handleAction(employee.Id, 'rejected', employee.Time)
-                    }
-                  >
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <Feather name="x" color={'#283093'} size={20} />
-                      <Text style={{marginLeft: 4, color: '#283093'}}>
-                        Deny
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
+                  {/* <Text >Employee ID: {employee.employeeId._id}</Text>  */}
                 </View>
-                {/* // </View> */}
               </View>
-            )
-          ),
-        )}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: '#ECEDFE',
+                  marginTop: 12,
+                  width: '50%',
+                  height: 30,
+                  paddingHorizontal: 12,
+                  paddingVertical: 6,
+                  borderRadius: 12,
+                  borderWidth: 0.011,
+                }}
+              >
+                <Feather size={15} color={'#283093'} name="briefcase" />
+                <Text style={{color: '#283093', marginLeft: 5}}>
+                  {employee.jobProfileDes}
+                </Text>
+              </View>
+              <Text style={styles.punchIn}>
+                Punch In: {new Date(employee.Time).toLocaleTimeString()}
+              </Text>
+            </View>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-evenly',
+                margin: 25,
+              }}
+            >
+              <TouchableOpacity
+                style={styles.Ftext}
+                onPress={() =>
+                  handleAction(employee.Id, 'approved', employee.Time)
+                }
+              >
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Feather name="check" color={'#FBFBFC'} size={20} />
+                  <Text style={{marginLeft: 4, color: '#FBFBFC'}}>Approve</Text>
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={{
+                  ...styles.Ftext,
+                  backgroundColor: 'white',
+                  borderColor: '#283093',
+                  borderWidth: 1,
+                }}
+                onPress={() =>
+                  handleAction(employee.Id, 'rejected', employee.Time)
+                }
+              >
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Feather name="x" color={'#283093'} size={20} />
+                  <Text style={{marginLeft: 4, color: '#283093'}}>Deny</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+            {/* // </View> */}
+          </View>
+        ))}
       </View>
     </SafeAreaView>
   );
