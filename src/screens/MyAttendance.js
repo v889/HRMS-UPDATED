@@ -12,24 +12,14 @@ import {
   Dimensions,
 } from 'react-native';
 
-// import { Table, Row } from 'react-native-table-component';
-
 import axios from 'axios';
-
-import Icon from 'react-native-vector-icons/FontAwesome';
-
-import Navbar from './Navbar';
-
-import {Picker} from '@react-native-picker/picker';
 
 import {BASE_URL} from '../ConfigLinks';
 
-import {Table, Row, Rows} from 'react-native-table-component';
-
 const MyAttendance = ({date}) => {
+  console.log('datepss', date);
+  const datePart = date.toISOString().split('T')[0];
   const [isLoading, setIsLoading] = useState(false);
-
-  const [isLogin, setIsLogin] = useState(false);
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -47,41 +37,30 @@ const MyAttendance = ({date}) => {
 
   const [data, setData] = useState([]);
 
-  const [searchText, setSearchText] = useState(''); // State variable to store the search text
-
-  const [filteredData, setFilteredData] = useState([]); // State variable to store the filtered data
-
-  const [selectedOption, setSelectedOption] = useState('Staff Attandance');
-
   useEffect(() => {
     fetchData();
-  }, [date]);
-
+  }, [datePart]);
   const handleRefresh = () => {
     setRefreshing(true);
-
     fetchData(); // Call the fetchData function again to refresh the data
-
     setRefreshing(false);
   };
 
   const fetchData = async () => {
     ///console.warn('click happened');
-
-   setRefreshing(true)
-  
+    setRefreshing(true);
     try {
-      //console.log("hii")
-      const datePart = date.toISOString().split('T')[0];
-      console.log(datePart);
-
-      const res = await axios.get(`${BASE_URL}/attendance/myAttendance?date=${datePart}/`);
+      const res = await axios.get(
+        `${BASE_URL}/attendance/myAttendance?date=${encodeURIComponent(
+          datePart,
+        )}/`,
+      );
 
       console.log(res);
 
       const parsedData = res?.data;
 
-      console.log("apidatamyAt",parsedData);
+      console.log('apidatamyAt', parsedData);
 
       if (parsedData.success && parsedData.data) {
         const userData = parsedData.data[0].punches;
@@ -157,20 +136,17 @@ const MyAttendance = ({date}) => {
 
         setFilteredData(mappedData);
 
-       setRefreshing(false)
-
         setIsLogin(true);
+        setRefreshing(false);
 
         //alert('MyAttendance data fetched successfully');
       } else {
         console.log('Invalid data format:', parsedData);
-
-        setRefreshing(false)
+        setRefreshing(false);
       }
     } catch (err) {
       console.log(`API Error: ${err}`);
-
-      setRefreshing(false)
+      setRefreshing(false);
     }
   };
 
