@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 
 import axios from 'axios';
-
+import Feather from 'react-native-vector-icons/Feather';
 import {BASE_URL} from '../ConfigLinks';
 
 const MyAttendance = ({date}) => {
@@ -40,6 +40,89 @@ const MyAttendance = ({date}) => {
   useEffect(() => {
     fetchData();
   }, [datePart]);
+  const checkStatus = status => {
+    let res;
+    if (status === 'pending') {
+      res = (
+        <View
+          style={{
+            flexDirection: 'row',
+            backgroundColor: '#FEF5ED',
+            borderRadius: 15,
+            padding: 6,
+          }}
+        >
+          <Feather
+            name="loader"
+            color={'#945D2D'}
+            size={15}
+            style={{marginRight: 4}}
+          />
+          <Text
+            style={{
+              fontSize: 12,
+              color: '#945D2D',
+            }}
+          >
+            Pending
+          </Text>
+        </View>
+      );
+    } else if (status === 'rejected') {
+      res = (
+        <View
+          style={{
+            flexDirection: 'row',
+            backgroundColor: '#FCECEC',
+            borderRadius: 15,
+            padding: 6,
+          }}
+        >
+          <Feather
+            name="x"
+            color={'#8A2626'}
+            size={15}
+            style={{marginRight: 4}}
+          />
+          <Text
+            style={{
+              fontSize: 12,
+              color: '#8A2626',
+            }}
+          >
+            Rejected
+          </Text>
+        </View>
+      );
+    } else {
+      res = (
+        <View
+          style={{
+            flexDirection: 'row',
+            backgroundColor: '#E9F7EF',
+            borderRadius: 15,
+            padding: 6,
+          }}
+        >
+          <Feather
+            name="check"
+            color={'#186A3B'}
+            size={15}
+            style={{marginRight: 4}}
+          />
+          <Text
+            style={{
+              fontSize: 12,
+              color: '#186A3B',
+            }}
+          >
+            Approved
+          </Text>
+        </View>
+      );
+    }
+    return res;
+  };
   const handleRefresh = () => {
     setRefreshing(true);
     fetchData(); // Call the fetchData function again to refresh the data
@@ -49,6 +132,7 @@ const MyAttendance = ({date}) => {
   const fetchData = async () => {
     ///console.warn('click happened');
     setRefreshing(true);
+    setData([]);
     try {
       const res = await axios.get(
         `${BASE_URL}/attendance/myAttendance?date=${encodeURIComponent(
@@ -68,76 +152,79 @@ const MyAttendance = ({date}) => {
         //console.log(parsedData)
 
         console.log('\nUserData', userData);
+        if (userData.length === 0) {
+          setData([]);
+        } else {
+          const mappedData = userData.map(item => {
+            // console.log('item111234', item);
 
-        const mappedData = userData.map(item => {
-          // console.log('item111234', item);
+            const formatTime = time => {
+              return item.punchIn
+                ? new Date(item.punchIn).toLocaleTimeString([], {
+                    hour: '2-digit',
 
-          const formatTime = time => {
-            return item.punchIn
+                    minute: '2-digit',
+
+                    hour12: true,
+                  })
+                : 'N/A';
+            };
+
+            const punchInTime = item.punchIn
               ? new Date(item.punchIn).toLocaleTimeString([], {
                   hour: '2-digit',
-
                   minute: '2-digit',
-
                   hour12: true,
                 })
               : 'N/A';
-          };
 
-          const punchInTime = item.punchIn
-            ? new Date(item.punchIn).toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true,
-              })
-            : 'N/A';
+            const punchOutTime = item?.punchOut
+              ? new Date(item.punchOut).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: true,
+                })
+              : 'Null';
 
-          const punchOutTime = item?.punchOut
-            ? new Date(item.punchOut).toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true,
-              })
-            : 'Null';
+            const approvedByValue = item?.approvedBy?.name
+              ? item?.approvedBy.name
+              : item.rejectedBy?.name
+              ? item.rejectedBy.name
+              : 'Need Action';
 
-          const approvedByValue = item?.approvedBy?.name
-            ? item?.approvedBy.name
-            : item.rejectedBy?.name
-            ? item.rejectedBy.name
-            : 'Need Action';
+            return {
+              Date: new Date(parsedData.data[0].date).toLocaleDateString(
+                'en-GB',
+                {
+                  year: 'numeric',
 
-          return {
-            Date: new Date(parsedData.data[0].date).toLocaleDateString(
-              'en-GB',
-              {
-                year: 'numeric',
+                  month: '2-digit',
 
-                month: '2-digit',
+                  day: '2-digit',
+                },
+              ),
 
-                day: '2-digit',
-              },
-            ),
+              punchIn: punchInTime,
 
-            punchIn: punchInTime,
+              PunchOut: punchOutTime,
 
-            PunchOut: punchOutTime,
+              status: item.status,
 
-            status: item.status,
+              Type: 'Pending',
 
-            Type: 'Pending',
+              ApprovedBy: approvedByValue,
+            };
+          });
 
-            ApprovedBy: approvedByValue,
-          };
-        });
+          setData(mappedData);
 
-        setData(mappedData);
+          console.log('renderData', mappedData); // console the
 
-        console.log('renderData', mappedData); // console the
+          setFilteredData(mappedData);
 
-        setFilteredData(mappedData);
-
-        setIsLogin(true);
-        setRefreshing(false);
+          setIsLogin(true);
+          setRefreshing(false);
+        }
 
         //alert('MyAttendance data fetched successfully');
       } else {
@@ -181,7 +268,7 @@ const MyAttendance = ({date}) => {
 
             <Text style={styles.columnRowTxt}>{item.PunchOut}</Text>
 
-            <Text style={styles.columnRowTxt}>{item.status}</Text>
+            <Text style={styles.columnRowTxt}>{checkStatus(item.status)}</Text>
 
             <Text style={styles.columnRowTxt}>{item.ApprovedBy}</Text>
           </View>
