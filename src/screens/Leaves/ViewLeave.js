@@ -521,6 +521,7 @@ const styles = StyleSheet.create({
     padding: 5,
     textAlign: 'left',
     fontFamily: 'Inter',
+    marginLeft: '10%',
   },
   Bodytext: {
     fontFamily: 'Inter',
