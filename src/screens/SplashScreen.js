@@ -32,7 +32,10 @@ const SplashScreen = ({navigation}) => {
   return showSplash ? (
     <View style={styles.container}>
       <View style={styles.centeredContent}>
-        <Image style={styles.image} source={require('../../assets/aus.png')} />
+        <Image
+          style={styles.image}
+          source={require('../../assets/metalogo.png')}
+        />
         <Text> </Text>
         <Text style={{color: '#283093', fontSize: 23}}>
           Welcome to Chawla Ispat Group
